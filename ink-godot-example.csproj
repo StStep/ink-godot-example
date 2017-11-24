@@ -49,6 +49,34 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ink-engine-runtime\CallStack.cs" />
+    <Compile Include="ink-engine-runtime\Choice.cs" />
+    <Compile Include="ink-engine-runtime\ChoicePoint.cs" />
+    <Compile Include="ink-engine-runtime\Container.cs" />
+    <Compile Include="ink-engine-runtime\ControlCommand.cs" />
+    <Compile Include="ink-engine-runtime\DebugMetadata.cs" />
+    <Compile Include="ink-engine-runtime\Divert.cs" />
+    <Compile Include="ink-engine-runtime\Glue.cs" />
+    <Compile Include="ink-engine-runtime\INamedContent.cs" />
+    <Compile Include="ink-engine-runtime\InkList.cs" />
+    <Compile Include="ink-engine-runtime\JsonSerialisation.cs" />
+    <Compile Include="ink-engine-runtime\ListDefinition.cs" />
+    <Compile Include="ink-engine-runtime\ListDefinitionsOrigin.cs" />
+    <Compile Include="ink-engine-runtime\NativeFunctionCall.cs" />
+    <Compile Include="ink-engine-runtime\Object.cs" />
+    <Compile Include="ink-engine-runtime\Path.cs" />
+    <Compile Include="ink-engine-runtime\PushPop.cs" />
+    <Compile Include="ink-engine-runtime\SimpleJson.cs" />
+    <Compile Include="ink-engine-runtime\Story.cs" />
+    <Compile Include="ink-engine-runtime\StoryException.cs" />
+    <Compile Include="ink-engine-runtime\StoryState.cs" />
+    <Compile Include="ink-engine-runtime\StringJoinExtension.cs" />
+    <Compile Include="ink-engine-runtime\Tag.cs" />
+    <Compile Include="ink-engine-runtime\Value.cs" />
+    <Compile Include="ink-engine-runtime\VariableAssignment.cs" />
+    <Compile Include="ink-engine-runtime\VariableReference.cs" />
+    <Compile Include="ink-engine-runtime\VariablesState.cs" />
+    <Compile Include="ink-engine-runtime\Void.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StoryNode.cs" />
   </ItemGroup>

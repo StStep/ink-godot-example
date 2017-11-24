@@ -12,3 +12,5 @@ ehthumbs.db
 Thumbs.db
 *.lnk
 .mono
+*.vs
+*.user

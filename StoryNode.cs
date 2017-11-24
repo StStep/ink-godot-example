@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using Ink.Runtime;
 
 public class StoryNode : Node
 {
