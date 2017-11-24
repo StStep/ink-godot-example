@@ -14,6 +14,10 @@ config/name="ink-godot-example"
 run/main_scene="res://Main.tscn"
 config/icon="res://icon.png"
 
+[editor_plugins]
+
+enabled=PoolStringArray( "GodotTIE" )
+
 [gdnative]
 
 singletons=[  ]
