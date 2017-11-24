@@ -21,3 +21,18 @@ func _on_input_enter(s):
 
 	tie.add_newline()
 	tie.buff_text("Oooh, so your name is " + s + "? What a beautiful name!", 0.01)
+
+func _on_buff_end():
+	print("Buff End")
+
+func _on_enter_break():
+	print("Enter Break")
+
+func _on_resume_break():
+	print("Resume Break")
+
+func _on_state_change(i):
+	print("New state: ", i)
+
+func _on_tag_buff(s):
+	print("Tag Buff ",s)

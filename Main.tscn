@@ -72,7 +72,17 @@ group = null
 text = "Start"
 flat = false
 
+[connection signal="buff_end" from="Panel/TextInterfaceEngine" to="." method="_on_buff_end"]
+
+[connection signal="enter_break" from="Panel/TextInterfaceEngine" to="." method="_on_enter_break"]
+
 [connection signal="input_enter" from="Panel/TextInterfaceEngine" to="." method="_on_input_enter"]
+
+[connection signal="resume_break" from="Panel/TextInterfaceEngine" to="." method="_on_resume_break"]
+
+[connection signal="state_change" from="Panel/TextInterfaceEngine" to="." method="_on_state_change"]
+
+[connection signal="tag_buff" from="Panel/TextInterfaceEngine" to="." method="_on_tag_buff"]
 
 [connection signal="pressed" from="Button" to="." method="_on_Button_pressed"]
 
