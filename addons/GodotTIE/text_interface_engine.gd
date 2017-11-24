@@ -29,7 +29,6 @@ onready var _max_lines_reached = false
 onready var _buff_beginning = true
 onready var _turbo = false
 onready var _max_lines = 0
-onready var _break_key = KEY_RETURN
 
 onready var _blink_input_visible = false
 onready var _blink_input_timer = 0
@@ -153,9 +152,6 @@ func set_state(i): # Changes the state of the Text Interface Engine
 	if(i == 2): # Set input index to last character on the label
 		_input_index = _label.get_text().length()
 
-func set_break_key_by_scancode(i): # Set a new key to resume breaks (uses scancode!)
-	_break_key = i
-
 func set_buff_speed(v): # Changes the velocity of the text being printed
 	if (_buffer[0]["buff_type"] == BUFF_TEXT):
 		_buffer[0]["buff_vel"] = v
@@ -165,7 +161,7 @@ func set_buff_speed(v): # Changes the velocity of the text being printed
 
 # Override
 func _ready():
-	set_fixed_process(true)
+	set_physics_process(true)
 	set_process_input(true)
 
 	add_child(_label)
@@ -179,7 +175,7 @@ func _ready():
 	_label.set_size(Vector2(get_size().x,get_size().y))
 	_label.set_autowrap(true)
 
-func _fixed_process(delta):
+func _physics_process(delta):
 	if(_state == STATE_OUTPUT): # Output
 		if(_buffer.size() == 0):
 			set_state(STATE_WAITING)
@@ -279,40 +275,44 @@ func _fixed_process(delta):
 	pass
 
 func _input(event):
-	if(event.type == InputEvent.KEY and event.is_pressed() == true ):
-		if(SCROLL_SKIPPED_LINES and event.scancode == KEY_UP or event.scancode == KEY_DOWN): # User is just scrolling the text
-			if(event.scancode == KEY_UP):
-				if(_label.get_lines_skipped() > 0):
-					_label.set_lines_skipped(_label.get_lines_skipped()-1)
-			else:
-				if(_label.get_lines_skipped() < _label.get_line_count()-_max_lines):
-					_label.set_lines_skipped(_label.get_lines_skipped()+1)
-		elif(_state == 1 and _on_break): # If its on a break
-			if(event.scancode == _break_key):
-				emit_signal("resume_break")
-				_buffer.pop_front() # Pop out break buff
-				_on_break = false
-		elif(_state == 2): # If its on the input state
-			if(BLINKING_INPUT): # Stop blinking line while inputing
-				_blink_input(true)
+	 # User is just scrolling the text
+	if SCROLL_SKIPPED_LINES and (event.is_action_pressed("ui_up") or event.is_action_pressed("ui_down")):
+		if event.is_action_pressed("ui_up"):
+			if(_label.get_lines_skipped() > 0):
+				_label.set_lines_skipped(_label.get_lines_skipped()-1)
+		else:
+			if(_label.get_lines_skipped() < _label.get_line_count()-_max_lines):
+				_label.set_lines_skipped(_label.get_lines_skipped()+1)
+	elif(_state == 1 and _on_break): # If its on a break
+		if event.is_action_pressed("ui_accept"):
+			emit_signal("resume_break")
+			_buffer.pop_front() # Pop out break buff
+			_on_break = false
+	elif(_state == 2): # If its on the input state
+		if(BLINKING_INPUT): # Stop blinking line while inputing
+			_blink_input(true)
 
-			var input = _label.get_text().right(_input_index) # Get Input
-			input = input.replace("\n","")
+		var input = _label.get_text().right(_input_index) # Get Input
+		input = input.replace("\n","")
 
-			if(event.scancode == KEY_BACKSPACE): # Delete last character
-				_delete_last_character(true)
-			elif(event.scancode == KEY_RETURN): # Finish input
-				emit_signal("input_enter", input)
-				if(!PRINT_INPUT): # Delete input
-					var i = _label.get_text().length() - _input_index
-					while(i > 0):
-						_delete_last_character()
-						i-=1
-				set_state(STATE_OUTPUT)
+		if event.is_action_pressed("ui_back"): # Delete last character
+			_delete_last_character(true)
+		elif event.is_action_pressed("ui_accept"): # Finish input
+			emit_signal("input_enter", input)
+			if(!PRINT_INPUT): # Delete input
+				var i = _label.get_text().length() - _input_index
+				while(i > 0):
+					_delete_last_character()
+					i-=1
+			set_state(STATE_OUTPUT)
 
-			elif(event.unicode >= 32 and event.unicode <= 126): # Add character
-				if(INPUT_CHARACTERS_LIMIT < 0 or input.length() < INPUT_CHARACTERS_LIMIT):
-					_label_print(_ARRAY_CHARS[event.unicode-32])
+		elif(event is InputEventKey and event.unicode >= 32 and event.unicode <= 126): # Add character
+			if(INPUT_CHARACTERS_LIMIT < 0 or input.length() < INPUT_CHARACTERS_LIMIT):
+				_label_print(_ARRAY_CHARS[event.unicode-32])
+		else:
+			pass
+	else:
+		pass
 
 # Private
 func _clear_skipped_lines():
