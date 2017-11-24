@@ -10,7 +10,7 @@ This project is an example on how Godot 3.0 Alpha 2, with mono runtime integrati
 
 While I originally intended to simply use the ink-runtime-engine.dll, I ran into some issues importing it within Godot.
 I was able to access it with Reflection, but the visual studio 'Add-Reference' option was leading to missing 'System.Runtime' assembly references.
-After failing to solve this issue, I resorted to including the Ink runtime code in the project as a git submodule.
+After failing to solve this issue, I resorted to including the Ink runtime code in the project as source.
 
 # References
 
