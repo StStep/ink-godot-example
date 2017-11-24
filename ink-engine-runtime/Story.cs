@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,7 +23,7 @@ namespace Ink.Runtime
         //  -- new engine, old format: possibly cope, based on this number
         // When incrementing the version number above, the question you
         // should ask yourself is:
-        //  -- Will the engine be able to load an old story file from 
+        //  -- Will the engine be able to load an old story file from
         //     before I made these changes to the engine?
         //     If possible, you should support it, though it's not as
         //     critical as loading old save games, since it's an
@@ -43,7 +43,7 @@ namespace Ink.Runtime
         /// </summary>
         public List<Choice> currentChoices
 		{
-			get 
+			get
 			{
                 // Don't include invisible choices for external usage.
                 var choices = new List<Choice>();
@@ -56,7 +56,7 @@ namespace Ink.Runtime
                 return choices;
 			}
 		}
-            
+
         /// <summary>
         /// The latest line of text to be generated from a Continue() call.
         /// </summary>
@@ -93,16 +93,16 @@ namespace Ink.Runtime
 
         /// <summary>
         /// The entire current state of the story including (but not limited to):
-        /// 
+        ///
         ///  * Global variables
         ///  * Temporary variables
         ///  * Read/visit and turn counts
         ///  * The callstack and evaluation stacks
         ///  * The current threads
-        /// 
+        ///
         /// </summary>
         public StoryState state { get { return _state; } }
-            
+
         // Warning: When creating a Story using this constructor, you need to
         // call ResetState on it before use. Intended for compiler use only.
         // For normal use, use the constructor that takes a json string.
@@ -135,7 +135,7 @@ namespace Ink.Runtime
             } else if (formatFromFile != inkVersionCurrent) {
                 System.Diagnostics.Debug.WriteLine ("WARNING: Version of ink used to build story doesn't match current version of engine. Non-critical, but recommend synchronising.");
             }
-                
+
             var rootToken = rootObject ["root"];
             if (rootToken == null)
                 throw new System.Exception ("Root node for ink not found. Are you sure it's a valid .ink.json file?");
@@ -166,7 +166,7 @@ namespace Ink.Runtime
 
             return SimpleJson.DictionaryToText (rootObject);
         }
-            
+
         /// <summary>
         /// Reset the Story back to its initial state as it was when it was
         /// first constructed.
@@ -262,7 +262,7 @@ namespace Ink.Runtime
                 //    which are actually built out of text content.
                 // So we have to take a snapshot of the state, continue prospectively,
                 // and rewind if necessary.
-                // This code is slightly fragile :-/ 
+                // This code is slightly fragile :-/
                 //
 
                 do {
@@ -297,7 +297,7 @@ namespace Ink.Runtime
 
                                 // Original newline still exists?
                                 if( currText.Length >= prevTextLength && currText[prevTextLength-1] == '\n' ) {
-                                    
+
                                     RestoreStateSnapshot(stateAtLastNewline);
                                     break;
                                 }
@@ -326,7 +326,7 @@ namespace Ink.Runtime
 								// ~ complexCalculation()   // don't actually need this unless it generates text
 								if( stateAtLastNewline == null )
                                 	stateAtLastNewline = StateSnapshot();
-                            } 
+                            }
 
                             // Can't continue, so we're about to exit - make sure we
                             // don't have an old state hanging around.
@@ -370,7 +370,7 @@ namespace Ink.Runtime
             } catch(StoryException e) {
                 AddError (e.Message, e.useEndLineNumber);
             } finally {
-                
+
                 state.didSafeExit = false;
 
                 _state.variablesState.batchObservingVariableChanges = false;
@@ -422,7 +422,7 @@ namespace Ink.Runtime
         {
             _state = state;
         }
-            
+
         void Step ()
         {
             bool shouldAddToStream = true;
@@ -432,7 +432,7 @@ namespace Ink.Runtime
             if (currentContentObj == null) {
                 return;
             }
-                
+
             // Step directly to the first element of content in a container (if necessary)
             Container currentContainer = currentContentObj as Container;
             while(currentContainer) {
@@ -541,7 +541,7 @@ namespace Ink.Runtime
 
             if (!newContentObject)
                 return;
-            
+
             // First, find the previously open set of containers
 			if( _prevContainerSet == null ) _prevContainerSet = new HashSet<Container> ();
 			_prevContainerSet.Clear();
@@ -561,7 +561,7 @@ namespace Ink.Runtime
 
                 // Check whether this ancestor container is being entered at the start,
                 // by checking whether the child object is the first.
-                bool enteringAtStart = currentContainerAncestor.content.Count > 0 
+                bool enteringAtStart = currentContainerAncestor.content.Count > 0
                     && currentChildOfContainer == currentContainerAncestor.content [0];
 
                 // Mark a visit to this container
@@ -571,7 +571,7 @@ namespace Ink.Runtime
                 currentContainerAncestor = currentContainerAncestor.parent as Container;
             }
         }
-            
+
         Choice ProcessChoice(ChoicePoint choicePoint)
         {
             bool showChoice = true;
@@ -604,7 +604,7 @@ namespace Ink.Runtime
                     showChoice = false;
                 }
             }
-                
+
             var choice = new Choice (choicePoint);
             choice.threadAtGeneration = state.callStack.currentThread.Copy ();
 
@@ -641,7 +641,7 @@ namespace Ink.Runtime
         }
 
         /// <summary>
-        /// Checks whether contentObj is a control or flow object rather than a piece of content, 
+        /// Checks whether contentObj is a control or flow object rather than a piece of content,
         /// and performs the required command if necessary.
         /// </summary>
         /// <returns><c>true</c> if object was logic or flow control, <c>false</c> if it's normal content.</returns>
@@ -654,7 +654,7 @@ namespace Ink.Runtime
 
             // Divert
             if (contentObj is Divert) {
-                
+
                 Divert currentDivert = (Divert)contentObj;
 
                 if (currentDivert.isConditional) {
@@ -709,7 +709,7 @@ namespace Ink.Runtime
                 }
 
                 return true;
-            } 
+            }
 
             // Start/end an expression evaluation? Or print out the result?
             else if( contentObj is ControlCommand ) {
@@ -731,7 +731,7 @@ namespace Ink.Runtime
 
                     // If the expression turned out to be empty, there may not be anything on the stack
                     if (state.evaluationStack.Count > 0) {
-                        
+
                         var output = state.PopEvaluationStack ();
 
                         // Functions may evaluate to Void, in which case we skip output
@@ -792,7 +792,7 @@ namespace Ink.Runtime
                         var errorMsg = string.Format ("Found {0}, when expected {1}", names [popType], expected);
 
                         Error (errorMsg);
-                    } 
+                    }
 
                     else {
                         state.callStack.Pop ();
@@ -812,7 +812,7 @@ namespace Ink.Runtime
                     break;
 
                 case ControlCommand.CommandType.EndString:
-                    
+
                     // Since we're iterating backward through the content,
                     // build a stack so that when we build the string,
                     // it's in the right order
@@ -862,7 +862,7 @@ namespace Ink.Runtime
                         Error("TURNS_SINCE expected a divert target (knot, stitch, label name), but saw "+target+extraNote);
                         break;
                     }
-                        
+
                     var divertTarget = target as DivertTargetValue;
                     var container = ContentAtPath (divertTarget.targetPath) as Container;
 
@@ -871,7 +871,7 @@ namespace Ink.Runtime
                         eitherCount = TurnsSinceForContainer (container);
                     else
                         eitherCount = VisitCountForContainer (container);
-                    
+
                     state.PushEvaluationStack (new IntValue (eitherCount));
                     break;
 
@@ -929,13 +929,13 @@ namespace Ink.Runtime
                     break;
 
                 case ControlCommand.CommandType.Done:
-                    
+
                     // We may exist in the context of the initial
                     // act of creating the thread, or in the context of
                     // evaluating the content.
                     if (state.callStack.canPopThread) {
                         state.callStack.PopThread ();
-                    } 
+                    }
 
                     // In normal flow - allow safe exit without warning
                     else {
@@ -946,7 +946,7 @@ namespace Ink.Runtime
                     }
 
                     break;
-                
+
                 // Force flow to end completely
                 case ControlCommand.CommandType.End:
                     state.ForceEnd ();
@@ -956,8 +956,8 @@ namespace Ink.Runtime
                     var intVal = state.PopEvaluationStack () as IntValue;
                     var listNameVal = state.PopEvaluationStack () as StringValue;
 
-					if (intVal == null) { 
-						throw new StoryException ("Passed non-integer when creating a list element from a numerical value."); 
+					if (intVal == null) {
+						throw new StoryException ("Passed non-integer when creating a list element from a numerical value.");
 					}
 
                     ListValue generatedListValue = null;
@@ -1023,7 +1023,7 @@ namespace Ink.Runtime
                                 }
                             }
                         }
-                            
+
                         state.PushEvaluationStack (result);
                         break;
                     }
@@ -1087,7 +1087,7 @@ namespace Ink.Runtime
                 var result = func.Call (funcParams);
                 state.PushEvaluationStack (result);
                 return true;
-            } 
+            }
 
             // No control content, must be ordinary content
             return false;
@@ -1098,16 +1098,16 @@ namespace Ink.Runtime
         /// From here you can call Continue() to evaluate the next line.
         /// The path string is a dot-separated path as used internally by the engine.
         /// These examples should work:
-        /// 
+        ///
         ///    myKnot
         ///    myKnot.myStitch
-        /// 
+        ///
         /// Note however that this won't necessarily work:
-        /// 
+        ///
         ///    myKnot.myStitch.myLabelledChoice
-        /// 
+        ///
         /// ...because of the way that content is nested within a weave structure.
-        /// 
+        ///
         /// </summary>
         /// <param name="path">A dot-separted path string, as specified above.</param>
         /// <param name="arguments">Optional set of arguments to pass, if path is to a knot that takes them.</param>
@@ -1117,7 +1117,7 @@ namespace Ink.Runtime
             ChoosePath (new Path (path));
         }
 
-            
+
         internal void ChoosePath(Path p)
         {
             state.SetChosenPath (p);
@@ -1136,7 +1136,7 @@ namespace Ink.Runtime
             var choices = currentChoices;
             Assert (choiceIdx >= 0 && choiceIdx < choices.Count, "choice out of range");
 
-            // Replace callstack with the one from the thread at the choosing point, 
+            // Replace callstack with the one from the thread at the choosing point,
             // so that we can jump into the right place in the flow.
             // This is important in case the flow was forked by a new thread, which
             // can create multiple leading edges for the story, each of
@@ -1303,7 +1303,7 @@ namespace Ink.Runtime
             } else {
                 returnObj = new Runtime.Void ();
             }
-                
+
             state.PushEvaluationStack (returnObj);
         }
 
@@ -1328,7 +1328,7 @@ namespace Ink.Runtime
         }
 
         object TryCoerce<T>(object value)
-        {  
+        {
             if (value == null)
                 return null;
 
@@ -1437,7 +1437,7 @@ namespace Ink.Runtime
             BindExternalFunctionGeneral (funcName, (object[] args) => {
                 Assert(args.Length == 2, "External function expected two arguments");
                 return func(
-                    (T1)TryCoerce<T1>(args[0]), 
+                    (T1)TryCoerce<T1>(args[0]),
                     (T2)TryCoerce<T2>(args[1])
                 );
             });
@@ -1455,7 +1455,7 @@ namespace Ink.Runtime
             BindExternalFunctionGeneral (funcName, (object[] args) => {
                 Assert(args.Length == 2, "External function expected two arguments");
                 act(
-                    (T1)TryCoerce<T1>(args[0]), 
+                    (T1)TryCoerce<T1>(args[0]),
                     (T2)TryCoerce<T2>(args[1])
                 );
                 return null;
@@ -1474,7 +1474,7 @@ namespace Ink.Runtime
             BindExternalFunctionGeneral (funcName, (object[] args) => {
                 Assert(args.Length == 3, "External function expected two arguments");
                 return func(
-                    (T1)TryCoerce<T1>(args[0]), 
+                    (T1)TryCoerce<T1>(args[0]),
                     (T2)TryCoerce<T2>(args[1]),
                     (T3)TryCoerce<T3>(args[2])
                 );
@@ -1493,7 +1493,7 @@ namespace Ink.Runtime
             BindExternalFunctionGeneral (funcName, (object[] args) => {
                 Assert(args.Length == 3, "External function expected two arguments");
                 act(
-                    (T1)TryCoerce<T1>(args[0]), 
+                    (T1)TryCoerce<T1>(args[0]),
                     (T2)TryCoerce<T2>(args[1]),
                     (T3)TryCoerce<T3>(args[2])
                 );
@@ -1524,7 +1524,7 @@ namespace Ink.Runtime
 			// No problem! Validation complete
 			if( missingExternals.Count == 0 ) {
 				_hasValidatedExternals = true;
-			} 
+			}
 
 			// Error for all missing externals
 			else {
@@ -1533,7 +1533,7 @@ namespace Ink.Runtime
 					string.Join("', '", missingExternals.ToArray()),
 					allowExternalFunctionFallbacks ? ", and no fallback ink function found." : " (ink fallbacks disabled)"
 				);
-					
+
 				Error(message);
 			}
         }
@@ -1574,7 +1574,7 @@ namespace Ink.Runtime
                 }
             }
         }
-           
+
         /// <summary>
         /// Delegate definition for variable observation - see ObserveVariable.
         /// </summary>
@@ -1636,7 +1636,7 @@ namespace Ink.Runtime
                 if (_variableObservers.ContainsKey (specificVariableName)) {
                     _variableObservers [specificVariableName] -= observer;
                 }
-            } 
+            }
 
             // Remove observer for all variables
             else {
@@ -1651,7 +1651,7 @@ namespace Ink.Runtime
         {
             if (_variableObservers == null)
                 return;
-            
+
             VariableObserver observers = null;
             if (_variableObservers.TryGetValue (variableName, out observers)) {
 
@@ -1676,7 +1676,7 @@ namespace Ink.Runtime
 
         /// <summary>
         /// Gets any tags associated with a particular knot or knot.stitch.
-        /// These are defined as hash tags defined at the very top of a 
+        /// These are defined as hash tags defined at the very top of a
         /// knot or stitch.
         /// </summary>
         /// <param name="path">The path of the knot or stitch, in the form "knot" or "knot.stitch".</param>
@@ -1754,7 +1754,7 @@ namespace Ink.Runtime
                 if (state.currentContentObject != null) {
                     return;
                 }
-				
+
                 // Otherwise, if diverted location doesn't have valid content,
                 // drop down and attempt to increment.
                 // This can happen if the diverted path is intentionally jumping
@@ -1770,7 +1770,7 @@ namespace Ink.Runtime
                 bool didPop = false;
 
                 if (state.callStack.CanPop (PushPopType.Function)) {
-                    
+
                     // Pop from the call stack
                     state.callStack.Pop (PushPopType.Function);
 
@@ -1830,7 +1830,7 @@ namespace Ink.Runtime
 
             return successfulIncrement;
         }
-            
+
         bool TryFollowDefaultInvisibleChoice()
         {
             var allChoices = _state.currentChoices;
@@ -1846,7 +1846,7 @@ namespace Ink.Runtime
 
             return true;
         }
-            
+
         int VisitCountForContainer(Container container)
         {
             if( !container.visitsShouldBeCounted ) {
@@ -1977,7 +1977,7 @@ namespace Ink.Runtime
                 if (formatParams != null && formatParams.Count() > 0) {
                     message = string.Format (message, formatParams);
                 }
-                    
+
                 throw new System.Exception (message + " " + currentDebugMetadata);
             }
         }
@@ -1995,7 +1995,7 @@ namespace Ink.Runtime
                         return dm;
                     }
                 }
-                    
+
                 // Move up callstack if possible
                 for (int i = state.callStack.elements.Count - 1; i >= 0; --i) {
                     var currentObj = state.callStack.elements [i].currentObject;
@@ -2019,7 +2019,7 @@ namespace Ink.Runtime
             }
         }
 
-        int currentLineNumber 
+        int currentLineNumber
         {
             get {
                 var dm = currentDebugMetadata;

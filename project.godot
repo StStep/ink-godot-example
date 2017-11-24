@@ -14,10 +14,6 @@ config/name="ink-godot-example"
 run/main_scene="res://Main.tscn"
 config/icon="res://icon.png"
 
-[autoload]
-
-StoryNode="*res://StoryNode.cs"
-
 [editor_plugins]
 
 enabled=PoolStringArray( "GodotTIE" )

@@ -1,29 +1,41 @@
 extends Node
 
-onready var tie = get_node("Panel/TextInterfaceEngine")
+onready var tie = get_node("VBoxContainer/MarginContainer/Panel/TextInterfaceEngine")
+onready var story = get_node('StoryNode')
 
 func _ready():
 	pass
 
-func TestText():
+func _on_Button_pressed():
 	print("Starting text...")
+	story.Reset()
 	tie.reset()
 	tie.set_color(Color(1,1,1))
-	tie.buff_text("Hey there!! What's your name?\n", 0.01)
-	tie.buff_input()
 	tie.set_state(tie.STATE_OUTPUT)
-
-func _on_Button_pressed():
-	TestText()
 
 func _on_input_enter(s):
 	print("Input Enter ",s)
 
-	tie.add_newline()
-	tie.buff_text("Oooh, so your name is " + s + "? What a beautiful name!", 0.01)
+	if story.Choose(s.to_int() - 1):
+		tie.add_newline()
+		tie.add_newline()
+	else:
+		tie.add_newline()
 
 func _on_buff_end():
-	print("Buff End")
+	if story.CanContinue():
+		tie.buff_text(story.Continue(), 0.01)
+		tie.set_state(tie.STATE_OUTPUT)
+	elif story.CanChoose():
+		var ch = story.GetChoices()
+		var i = 1
+		for c in ch:
+			tie.buff_text("Choice %d:    %s\n" % [i, c], 0.01)
+			i+=1
+		tie.set_state(tie.STATE_OUTPUT)
+		tie.buff_input()
+	else:
+		pass
 
 func _on_enter_break():
 	print("Enter Break")

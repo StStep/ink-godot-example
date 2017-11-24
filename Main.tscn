@@ -1,30 +1,64 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://Main.gd" type="Script" id=1]
 [ext_resource path="res://addons/GodotTIE/text_interface_engine.gd" type="Script" id=2]
 [ext_resource path="res://addons/GodotTIE/GodotTIE_icon.png" type="Texture" id=3]
+[ext_resource path="res://StoryNode.cs" type="Script" id=4]
 
-[node name="Root" type="Node"]
+[node name="Main" type="Node"]
 
 script = ExtResource( 1 )
 
-[node name="Panel" type="Panel" parent="."]
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 1
+size_flags_horizontal = 1
+size_flags_vertical = 1
+alignment = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
 
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 179.0
-margin_top = 55.0
-margin_right = 503.0
-margin_bottom = 269.0
+margin_right = 1024.0
+margin_bottom = 576.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 0
-size_flags_horizontal = 1
-size_flags_vertical = 1
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_constants/margin_right = 10
+custom_constants/margin_top = 10
+custom_constants/margin_left = 10
+_sections_unfolded = [ "Size Flags", "custom_constants" ]
 
-[node name="TextInterfaceEngine" type="ReferenceRect" parent="Panel"]
+[node name="Panel" type="Panel" parent="VBoxContainer/MarginContainer"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 10.0
+margin_top = 10.0
+margin_right = 1014.0
+margin_bottom = 576.0
+rect_min_size = Vector2( 200, 200 )
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+_sections_unfolded = [ "Grow Direction", "Rect", "Size Flags" ]
+
+[node name="TextInterfaceEngine" type="ReferenceRect" parent="VBoxContainer/MarginContainer/Panel"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -41,7 +75,7 @@ __meta__ = {
 "_editor_icon": ExtResource( 3 )
 }
 SCROLL_ON_MAX_LINES = true
-BREAK_ON_MAX_LINES = true
+BREAK_ON_MAX_LINES = false
 AUTO_SKIP_WORDS = true
 LOG_SKIPPED_LINES = true
 SCROLL_SKIPPED_LINES = false
@@ -50,20 +84,20 @@ PRINT_INPUT = true
 BLINKING_INPUT = true
 INPUT_CHARACTERS_LIMIT = -1
 
-[node name="Button" type="Button" parent="."]
+[node name="Button" type="Button" parent="VBoxContainer"]
 
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 306.0
-margin_top = 22.0
-margin_right = 367.0
-margin_bottom = 42.0
+margin_left = 491.0
+margin_top = 580.0
+margin_right = 532.0
+margin_bottom = 600.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 0
-size_flags_horizontal = 1
+size_flags_horizontal = 4
 size_flags_vertical = 1
 toggle_mode = false
 enabled_focus_mode = 0
@@ -71,19 +105,24 @@ shortcut = null
 group = null
 text = "Start"
 flat = false
+_sections_unfolded = [ "Size Flags" ]
 
-[connection signal="buff_end" from="Panel/TextInterfaceEngine" to="." method="_on_buff_end"]
+[node name="StoryNode" type="Node" parent="."]
 
-[connection signal="enter_break" from="Panel/TextInterfaceEngine" to="." method="_on_enter_break"]
+script = ExtResource( 4 )
 
-[connection signal="input_enter" from="Panel/TextInterfaceEngine" to="." method="_on_input_enter"]
+[connection signal="buff_end" from="VBoxContainer/MarginContainer/Panel/TextInterfaceEngine" to="." method="_on_buff_end"]
 
-[connection signal="resume_break" from="Panel/TextInterfaceEngine" to="." method="_on_resume_break"]
+[connection signal="enter_break" from="VBoxContainer/MarginContainer/Panel/TextInterfaceEngine" to="." method="_on_enter_break"]
 
-[connection signal="state_change" from="Panel/TextInterfaceEngine" to="." method="_on_state_change"]
+[connection signal="input_enter" from="VBoxContainer/MarginContainer/Panel/TextInterfaceEngine" to="." method="_on_input_enter"]
 
-[connection signal="tag_buff" from="Panel/TextInterfaceEngine" to="." method="_on_tag_buff"]
+[connection signal="resume_break" from="VBoxContainer/MarginContainer/Panel/TextInterfaceEngine" to="." method="_on_resume_break"]
 
-[connection signal="pressed" from="Button" to="." method="_on_Button_pressed"]
+[connection signal="state_change" from="VBoxContainer/MarginContainer/Panel/TextInterfaceEngine" to="." method="_on_state_change"]
+
+[connection signal="tag_buff" from="VBoxContainer/MarginContainer/Panel/TextInterfaceEngine" to="." method="_on_tag_buff"]
+
+[connection signal="pressed" from="VBoxContainer/Button" to="." method="_on_Button_pressed"]
 
 
