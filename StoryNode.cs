@@ -4,21 +4,14 @@ using Ink.Runtime;
 
 public class StoryNode : Node
 {
-    // Member variables here, example:
-    // private int a = 2;
-    // private string b = "textvar";
+    private String input_path = "ink-scripts/Monsieur.ink.json";
 
     public override void _Ready()
     {
-        // Called every time the node is added to the scene.
-        // Initialization here
+        String text = System.IO.File.ReadAllText(input_path);
+        var story = new Story(text);
 
+        GD.print(story.canContinue);
+        GD.print(story.Continue());
     }
-
-//    public override void _Process(float delta)
-//    {
-//        // Called every frame. Delta is time since last frame.
-//        // Update game logic here.
-//
-//    }
 }
