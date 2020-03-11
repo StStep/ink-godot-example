@@ -5,15 +5,15 @@ using Ink.Runtime;
 
 public class StoryNode : Node
 {
-    private String input_path = "ink-scripts/Monsieur.ink.json";
+	private String input_path = "ink-scripts/Monsieur.ink.json";
 
 	private Story _inkStory = null;
 
-    public override void _Ready()
-    {
-        String text = System.IO.File.ReadAllText(input_path);
-        _inkStory = new Story(text);
-    }
+	public override void _Ready()
+	{
+		String text = System.IO.File.ReadAllText(input_path);
+		_inkStory = new Story(text);
+	}
 
 	public void Reset()
 	{
@@ -47,10 +47,10 @@ public class StoryNode : Node
 	public String[] GetChoices()
 	{
 		var ret = new String[_inkStory.currentChoices.Count];
-	    for (int i = 0; i < _inkStory.currentChoices.Count; ++i) {
-	        Choice choice = _inkStory.currentChoices [i];
-	        ret[i] = choice.text;
-	    }
+		for (int i = 0; i < _inkStory.currentChoices.Count; ++i) {
+			Choice choice = _inkStory.currentChoices [i];
+			ret[i] = choice.text;
+		}
 
 		return ret;
 	}
